@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Orbitron:wght@500;900&display=swap');
+
+body {
+    background-color: #0b0c10;
+    color: #c5c6c7;
+    font-family: 'Roboto Mono', monospace;
+    overflow: hidden;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at center, #1f2833 0%, #0b0c10 100%);
+}
+
+/* --- GLAVNI OKVIR POVEČAN --- */
+.ui-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(11, 12, 16, 0.90); /* Malo bolj temno ozadje */
+    
+    /* Povečan padding za večji okvir */
+    padding: 60px 80px; 
+    
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 15px rgba(102, 252, 241, 0.1); /* Dodan nežen sijaj */
+    backdrop-filter: blur(15px);
+    
+    /* Zagotovi, da je okvir dovolj širok */
+    min-width: 900px;
+}
+
+.title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3em; /* Povečana pisava naslova */
+    font-weight: 900;
+    color: #66fcf1;
+    text-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
+    margin-bottom: 40px; /* Več prostora pod naslovom */
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.game-panel {
+    display: flex;
+    gap: 60px; /* Večji razmak med labirintom in gumbi */
+    align-items: flex-start;
+}
+
+.canvas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Razmak med timerjem in platnom */
+}
+
+/* --- NOV HEADER ZA TIMER --- */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(102, 252, 241, 0.3);
+    margin-bottom: 5px;
+    width: 100%; /* Poravnano s širino canvasa */
+}
+
+.status-label {
+    font-size: 0.7em;
+    color: #45a29e;
+    letter-spacing: 2px;
+}
+
+#timer-display {
+    /* Ni več absolute, zdaj je lepo poravnan v headerju */
+    position: relative; 
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4em;
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: 2px;
+}
+
+#canvas {
+    display: block;
+    background: #000;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Senca samo na canvasu */
+    border: 1px solid rgba(102, 252, 241, 0.2); /* Zelo tanek rob za definicijo */
+}
+
+/* --- DESNA STRAN --- */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 280px; /* Malo širši sidebar */
+    padding-top: 10px; /* Da se poravna z vrhom timerja */
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+button {
+    padding: 18px; /* Večji gumbi */
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #0b0c10;
+    background-color: #66fcf1;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(102, 252, 241, 0.2);
+}
+
+button:hover {
+    background-color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(102, 252, 241, 0.6);
+}
+
+button:disabled {
+    background-color: #333;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.small-btn {
+    font-size: 0.8em;
+    padding: 10px;
+    background-color: transparent;
+    border: 1px solid #45a29e;
+    color: #45a29e;
+    margin-top: 15px;
+}
+.small-btn:hover {
+    background-color: rgba(69, 162, 158, 0.1);
+    color: white;
+    border-color: white;
+    transform: none;
+    box-shadow: none;
+}
+
+.highscore-board {
+    background: rgba(31, 40, 51, 0.6);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.highscore-board h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #ffd700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+#score-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1em;
+    color: #c5c6c7;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#score-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.instructions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.instruct-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9em;
+    color: #999;
+    background: rgba(31, 40, 51, 0.4);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #333;
+}
+.instruct-item:hover {
+    border-left-color: #66fcf1;
+    background: rgba(31, 40, 51, 0.7);
+}
+
+.instruct-item p {
+    margin: 0;
+}

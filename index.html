@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Maze Run</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>	
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+</head>
+<body>
+    
+    <div id="particles"></div>
+    
+    <div class="ui-container">
+        <div class="title">CYBER MAZE RUNNER</div>
+        
+        <div class="game-panel">
+            <div class="canvas-container">
+                <div class="game-header">
+                    <div id="timer-display">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#66fcf1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span id="time-val">00:00.00</span>
+                    </div>
+                    <div class="status-label">SYSTEM ONLINE</div>
+                </div>
+                
+                <canvas id="canvas" width="484" height="484"></canvas>
+            </div>
+
+            <div class="sidebar">
+                <div class="buttons">
+                    <button id="btn-solve">AUTO SOLVE</button>
+                    <button id="btn-reset">RESET GAME</button>
+                </div>
+                
+                <div class="highscore-board">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                        </svg>
+                        HIGH SCORES
+                    </h3>
+                    <ul id="score-list">
+                        <li>No records yet</li>
+                    </ul>
+                    <button id="btn-clear-scores" class="small-btn">Clear Records</button>
+                </div>
+                
+                <div class="instructions">
+                    <div class="instruct-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <p>Use <strong>Arrow Keys</strong> to move the character.</p>
+                    </div>
+                    <div class="instruct-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                            <line x1="4" y1="22" x2="4" y2="15"></line>
+                        </svg>
+                        <p>Reach the <strong>Green Zone</strong> to win.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script> 
+</body>
+</html>
