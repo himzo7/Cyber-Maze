@@ -46,7 +46,7 @@ Since this project relies on pure web technologies, no server or Node.js environ
 | **⬇️ Arrow Down** | Move character Down |
 | **⬅️ Arrow Left** | Move character Left |
 | **➡️ Arrow Right** | Move character Right |
-| **AUTO SOLVE** | AI automatically solves the maze |
+| **AUTO SOLVE** | Automatically solves the maze |
 | **RESET** | Resets the game and timer |
 
 **Objective:** Guide the red character from the starting point (top) to the **Green Zone** (bottom) in the shortest time possible.
