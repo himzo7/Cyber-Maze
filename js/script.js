@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 const btnSolve = document.getElementById("btn-solve");
 const btnReset = document.getElementById("btn-reset");
 const btnClearScores = document.getElementById("btn-clear-scores");
-const timeVal = document.getElementById("time-val"); // Spremenjen ID za text
+const timeVal = document.getElementById("time-val");
 const scoreList = document.getElementById("score-list");
 
 // --- CONFIG ---
@@ -73,11 +73,19 @@ const rawLines = [
 
 // Game State
 let player = { x: 14, y: 0 };
+let visualPlayer = { x: 14, y: 0 }; // Za animacijo karakterja
 let end = { x: 15, y: 29 };
 let pathHistory = [];
 let isSolving = false;
 let isGameActive = true;
 let grid = [];
+
+// Zvezno premikanje
+let keys = {};
+let lastMoveTime = 0;
+let firstPressDelay = {}; // Shrani čas za začetni zamik
+const MOVE_INTERVAL = 100; // Čas med premiki, KO DRŽIŠ tipko
+const HOLD_DELAY = 200;    // Čas, ki mora miniti preden se začne avtomatsko ponavljanje
 
 // Timer
 let timerInterval = null;
@@ -88,15 +96,18 @@ let isTimerRunning = false;
 initGame();
 loadHighScores();
 
-tsParticles.load("particles", {
-    particles: { 
-        number: { value: 70 }, 
-        color: { value: "#66fcf1" }, 
-        opacity: { value: 0.2 }, 
-        size: { value: 2 }, 
-        move: { enable: true, speed: 0.6 } 
-    }
-});
+// Če uporabljaš tsParticles (zunanja knjižnica, poskrbi, da je naložena v HTML-ju)
+if (typeof tsParticles !== 'undefined') {
+    tsParticles.load("particles", {
+        particles: { 
+            number: { value: 70 }, 
+            color: { value: "#66fcf1" }, 
+            opacity: { value: 0.2 }, 
+            size: { value: 2 }, 
+            move: { enable: true, speed: 0.6 } 
+        }
+    });
+}
 
 // ------------------------------------
 // 1. GAME CONTROL
@@ -110,26 +121,28 @@ function initGame() {
     btnSolve.disabled = false;
     
     player = { x: 14, y: 0 };
+    visualPlayer = { x: 14, y: 0 };
     pathHistory = [{x: 14, y: 0}];
+    keys = {};
+    firstPressDelay = {};
     
     if(grid.length === 0) buildLogicalGrid();
-    
-    draw();
 }
 
 function resetGame() {
-    isSolving = false;
+    isSolving = false; // USTAVI AUTO SOLVE!
     isGameActive = true;
     stopTimer();
     updateTimerDisplay(0);
     btnSolve.disabled = false;
     
-    pathHistory = []; 
     player = { x: 14, y: 0 };
-    pathHistory.push({x: 14, y: 0});
+    visualPlayer = { x: 14, y: 0 };
+    pathHistory = [{x: 14, y: 0}];
+    keys = {};
+    firstPressDelay = {};
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    draw();
 }
 
 // ------------------------------------
@@ -138,8 +151,8 @@ function resetGame() {
 
 function drawMaze() {
     ctx.beginPath();
-    ctx.strokeStyle = "#66fcf1"; // Clean cyan
-    ctx.lineWidth = 1.5;         // Slightly thinner lines
+    ctx.strokeStyle = "#66fcf1"; 
+    ctx.lineWidth = 1.5;         
     ctx.lineCap = "square";
 
     rawLines.forEach(line => {
@@ -155,7 +168,7 @@ function drawPlayerSprite(x, y, size) {
     ctx.translate(x + size/2, y + size/2);
     
     // Character Body
-    ctx.fillStyle = "#ff2e63"; // Pleasant reddish-pink
+    ctx.fillStyle = "#ff2e63"; 
     ctx.beginPath();
     ctx.arc(0, 0, size/2 - 2, 0, Math.PI * 2);
     ctx.fill();
@@ -176,9 +189,9 @@ function draw() {
     drawMaze();
 
     // Trail
-    if (pathHistory.length > 1) {
+    if (pathHistory.length > 0) {
         ctx.beginPath();
-        ctx.strokeStyle = "rgba(255, 46, 99, 0.5)"; // Matching character color
+        ctx.strokeStyle = "rgba(255, 46, 99, 0.5)"; 
         ctx.lineWidth = 4;
         ctx.lineJoin = "round";
         
@@ -186,17 +199,23 @@ function draw() {
         const startY = pathHistory[0].y * CELL_SIZE + OFFSET + CELL_SIZE/2;
         ctx.moveTo(startX, startY);
 
-        for (let i = 1; i < pathHistory.length; i++) {
+        for (let i = 1; i < pathHistory.length - 1; i++) {
             const px = pathHistory[i].x * CELL_SIZE + OFFSET + CELL_SIZE/2;
             const py = pathHistory[i].y * CELL_SIZE + OFFSET + CELL_SIZE/2;
             ctx.lineTo(px, py);
         }
+        
+        // Sled potegnemo do animirane pozicije lika
+        const fx = visualPlayer.x * CELL_SIZE + OFFSET + CELL_SIZE/2;
+        const fy = visualPlayer.y * CELL_SIZE + OFFSET + CELL_SIZE/2;
+        ctx.lineTo(fx, fy);
+        
         ctx.stroke();
     }
 
-    // Player
-    const px = player.x * CELL_SIZE + OFFSET;
-    const py = player.y * CELL_SIZE + OFFSET;
+    // Player (uporabimo visualPlayer za gladkost)
+    const px = visualPlayer.x * CELL_SIZE + OFFSET;
+    const py = visualPlayer.y * CELL_SIZE + OFFSET;
     drawPlayerSprite(px, py, CELL_SIZE);
 
     // Goal
@@ -213,17 +232,32 @@ function draw() {
 // ------------------------------------
 
 document.addEventListener("keydown", (e) => {
-    if (isSolving || !isGameActive) return;
-    
-    let dx = 0, dy = 0;
-    if (e.key === "ArrowUp") dy = -1;
-    if (e.key === "ArrowDown") dy = 1;
-    if (e.key === "ArrowLeft") dx = -1;
-    if (e.key === "ArrowRight") dx = 1;
-    
-    if (dx !== 0 || dy !== 0) {
-        if (!isTimerRunning) startTimer();
-        tryMove(dx, dy);
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault(); 
+        
+        // Če tipka še ni bila pritisnjena, naredimo TAKOJŠEN premik
+        if (!keys[e.key]) {
+            keys[e.key] = true;
+            // Nastavimo, kdaj se lahko začne neprekinjeno premikanje
+            firstPressDelay[e.key] = performance.now() + HOLD_DELAY; 
+            
+            let dx = 0, dy = 0;
+            if (e.key === "ArrowUp") dy = -1;
+            else if (e.key === "ArrowDown") dy = 1;
+            else if (e.key === "ArrowLeft") dx = -1;
+            else if (e.key === "ArrowRight") dx = 1;
+
+            if (!isSolving && isGameActive) {
+                if (!isTimerRunning) startTimer();
+                tryMove(dx, dy);
+            }
+        }
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        keys[e.key] = false;
     }
 });
 
@@ -243,13 +277,53 @@ function tryMove(dx, dy) {
 
     player.x = nx;
     player.y = ny;
-    pathHistory.push({x: nx, y: ny});
-    draw();
+    
+    // Brisane presežka poti, če gremo po starih stopinjah
+    const existingIndex = pathHistory.findIndex(p => p.x === nx && p.y === ny);
+    if (existingIndex !== -1) {
+        pathHistory = pathHistory.slice(0, existingIndex + 1);
+    } else {
+        pathHistory.push({x: nx, y: ny});
+    }
 
     if (nx === end.x && ny === end.y) {
         winGame();
+        keys = {}; // Prepreči nadaljnje premikanje v ozadju
     }
 }
+
+// GAME LOOP ZA GLADKO ANIMACIJO
+function gameLoop(timestamp) {
+    requestAnimationFrame(gameLoop);
+
+    // Hitro premikanje ob držanju tipke
+    if (!isSolving && isGameActive) {
+        let dx = 0, dy = 0;
+        let activeKey = null;
+
+        if (keys["ArrowUp"]) { dy = -1; activeKey = "ArrowUp"; }
+        else if (keys["ArrowDown"]) { dy = 1; activeKey = "ArrowDown"; }
+        else if (keys["ArrowLeft"]) { dx = -1; activeKey = "ArrowLeft"; }
+        else if (keys["ArrowRight"]) { dx = 1; activeKey = "ArrowRight"; }
+
+        if (activeKey && (dx !== 0 || dy !== 0)) {
+            // Preverimo, če smo že presegli začetni zamik IN interval
+            if (timestamp > firstPressDelay[activeKey] && (timestamp - lastMoveTime > MOVE_INTERVAL)) {
+                if (!isTimerRunning) startTimer();
+                tryMove(dx, dy);
+                lastMoveTime = timestamp;
+            }
+        }
+    }
+
+    // Gladka interpolacija (Lerp) med kvadratki
+    visualPlayer.x += (player.x - visualPlayer.x) * 0.4;
+    visualPlayer.y += (player.y - visualPlayer.y) * 0.4;
+
+    draw(); // Posodobi platno
+}
+// Zaženemo glavno zanko igre
+requestAnimationFrame(gameLoop);
 
 // ------------------------------------
 // 4. TIMER
@@ -381,14 +455,10 @@ function buildLogicalGrid() {
 }
 
 // ------------------------------------
-// 7. AUTO SOLVE SLOWED DOWN
+// 7. AUTO SOLVE
 // ------------------------------------
 btnSolve.onclick = function() {
     if(isSolving) return;
-    
-    if (player.x !== 14 || player.y !== 0) {
-        // Optional: Could reset to start here, but currently just solves from current pos or start
-    }
     
     isSolving = true;
     startTimer();
@@ -454,16 +524,24 @@ btnSolve.onclick = function() {
 function animateSolution(path) {
     let i = 0;
     function step() {
+        if (!isSolving) return; // VAROVALKA: Prekinitev ob kliku na RESET
+
         if (i >= path.length) {
             winGame();
             return;
         }
         player = path[i];
-        pathHistory.push(player);
-        draw();
+        
+        // Logika brisanja uporabljena tudi tukaj
+        const existingIndex = pathHistory.findIndex(p => p.x === player.x && p.y === player.y);
+        if (existingIndex !== -1) {
+            pathHistory = pathHistory.slice(0, existingIndex + 1);
+        } else {
+            pathHistory.push({x: player.x, y: player.y});
+        }
+
         i++;
-        // Hitrost animacije: 100ms namesto 30ms
-        setTimeout(step, 100);
+        setTimeout(step, 80);
     }
     step();
 }
