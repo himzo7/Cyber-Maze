@@ -25,77 +25,43 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(11, 12, 16, 0.90); /* Malo bolj temno ozadje */
-    
-    /* Povečan padding za večji okvir */
+    background: rgba(11, 12, 16, 0.90);
     padding: 60px 80px; 
-    
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 15px rgba(102, 252, 241, 0.1); /* Dodan nežen sijaj */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 15px rgba(102, 252, 241, 0.1);
     backdrop-filter: blur(15px);
-    
-    /* Zagotovi, da je okvir dovolj širok */
     min-width: 900px;
 }
 
 .title {
     font-family: 'Orbitron', sans-serif;
-    font-size: 3em; /* Povečana pisava naslova */
+    font-size: 3em;
     font-weight: 900;
     color: #66fcf1;
     text-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
-    margin-bottom: 40px; /* Več prostora pod naslovom */
+    margin-bottom: 40px;
     letter-spacing: 4px;
     text-transform: uppercase;
 }
 
 .game-panel {
     display: flex;
-    gap: 60px; /* Večji razmak med labirintom in gumbi */
+    gap: 60px;
     align-items: flex-start;
 }
 
 .canvas-container {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Razmak med timerjem in platnom */
-}
-
-/* --- NOV HEADER ZA TIMER --- */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 5px;
-    border-bottom: 1px solid rgba(102, 252, 241, 0.3);
-    margin-bottom: 5px;
-    width: 100%; /* Poravnano s širino canvasa */
-}
-
-.status-label {
-    font-size: 0.7em;
-    color: #45a29e;
-    letter-spacing: 2px;
-}
-
-#timer-display {
-    /* Ni več absolute, zdaj je lepo poravnan v headerju */
-    position: relative; 
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.4em;
-    color: #e0e0e0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    letter-spacing: 2px;
+    gap: 10px;
 }
 
 #canvas {
     display: block;
     background: #000;
     border-radius: 4px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Senca samo na canvasu */
-    border: 1px solid rgba(102, 252, 241, 0.2); /* Zelo tanek rob za definicijo */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(102, 252, 241, 0.2);
 }
 
 /* --- DESNA STRAN --- */
@@ -103,8 +69,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 30px;
-    width: 280px; /* Malo širši sidebar */
-    padding-top: 10px; /* Da se poravna z vrhom timerja */
+    width: 280px;
+    padding-top: 10px;
 }
 
 .buttons {
@@ -114,7 +80,7 @@ body {
 }
 
 button {
-    padding: 18px; /* Večji gumbi */
+    padding: 18px;
     font-family: 'Orbitron', sans-serif;
     font-size: 1.1em;
     font-weight: bold;
@@ -127,6 +93,25 @@ button {
     text-transform: uppercase;
     letter-spacing: 1px;
     box-shadow: 0 0 10px rgba(102, 252, 241, 0.2);
+}
+/* --- INFO GUMB --- */
+.icon-btn {
+    padding: 12px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto 0 auto; /* Postavi na sredino pod ostale gumbe */
+}
+
+.icon-btn svg {
+    stroke: #0b0c10;
+}
+
+.icon-btn:hover svg {
+    stroke: #0b0c10;
 }
 
 button:hover {
@@ -141,82 +126,4 @@ button:disabled {
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-}
-
-.small-btn {
-    font-size: 0.8em;
-    padding: 10px;
-    background-color: transparent;
-    border: 1px solid #45a29e;
-    color: #45a29e;
-    margin-top: 15px;
-}
-.small-btn:hover {
-    background-color: rgba(69, 162, 158, 0.1);
-    color: white;
-    border-color: white;
-    transform: none;
-    box-shadow: none;
-}
-
-.highscore-board {
-    background: rgba(31, 40, 51, 0.6);
-    border-radius: 12px;
-    padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.highscore-board h3 {
-    margin-top: 0;
-    font-size: 1.2em;
-    color: #ffd700;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 12px;
-    margin-bottom: 15px;
-}
-
-#score-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 1em;
-    color: #c5c6c7;
-    max-height: 150px;
-    overflow-y: auto;
-}
-
-#score-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.instructions {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.instruct-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 0.9em;
-    color: #999;
-    background: rgba(31, 40, 51, 0.4);
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 3px solid #333;
-}
-.instruct-item:hover {
-    border-left-color: #66fcf1;
-    background: rgba(31, 40, 51, 0.7);
-}
-
-.instruct-item p {
-    margin: 0;
 }
