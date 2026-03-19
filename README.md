@@ -1,55 +1,52 @@
-# 🕹️ Cyber Maze Runner
+# 🕹️ Cyber Maze 
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Technology](https://img.shields.io/badge/HTML5-Canvas-orange)
 ![Technology](https://img.shields.io/badge/CSS3-Neon-blue)
 ![Technology](https://img.shields.io/badge/JavaScript-ES6-yellow)
 
-> **Cyber Maze Runner** is an interactive web-based game where the player navigates a "data packet" through a complex 30x30 orthogonal maze. The project features advanced HTML5 Canvas rendering, raw SVG coordinate collision detection, and an automated Breadth-First Search (BFS) pathfinding algorithm.
+> **Cyberpunk Auto-Maze Visualizer** is a sleek, automated web-based visualization tool. It demonstrates a "data packet" navigating through a complex 30x30 orthogonal maze. Built purely with HTML5 Canvas and JavaScript, it focuses on precise pathfinding animation and striking neon cyberpunk aesthetics.
 
 ## ✨ Key Features
 
-### 🎮 Gameplay
-* **Interactive Controls:** Smooth character movement using keyboard arrow keys.
-* **Visual Trail:** The player leaves a trail behind, visualizing the path taken.
-* **Precision Timer:** Tracks gameplay time down to hundredths of a second.
-* **High Scores:** Best times are saved locally in the browser (LocalStorage).
+### 🎮 Automated Visualization
+* **Auto-Solve Only:** The maze is solved entirely by an automated pathfinding algorithm, creating a mesmerizing, hands-off visual experience.
+* **Animated Trail:** The "packet" (character) leaves a precision-drawn trail behind as it navigates the complex grid.
+* **Cinematic Completion:** Features synchronized audio triggers and a polished `SweetAlert2` modal upon successfully reaching the extraction zone.
 
 ### ⚙️ Technical Highlights
-* **SVG to Canvas Parsing:** The maze is not an image; it is generated from raw SVG coordinates (`<line>`) which are parsed and rendered using `ctx.moveTo` and `ctx.lineTo`.
-* **Auto-Solve Algorithm:** Implements a **BFS (Breadth-First Search)** algorithm to calculate and animate the shortest path from start to finish.
-* **Dynamic Collision Detection:** Converts vector lines into a logical Grid Map to handle wall collisions efficiently.
-* **Cyberpunk UI:** Modern user interface with neon glow effects, animated particle background, and SVG icons.
+* **Raw Coordinate Rendering:** The maze is not a static image. The walls are rendered directly onto the Canvas using exact SVG-derived coordinate data (`ctx.moveTo` and `ctx.lineTo`), ensuring 100% perfect synchronization between the visual walls and the calculated path.
+* **Pre-calculated Pathing:** The exact traversal path is defined by a grid-based coordinate system, simulating perfect routing.
+* **Cyberpunk Aesthetics:** Features a modern, minimalist dark UI, glowing neon (`box-shadow` & `shadowBlur`) wall effects, and an ambient particle background (`tsParticles`).
 
 ---
 
 ## 🚀 Installation & Setup
 
-Since this project relies on pure web technologies, no server or Node.js environment is required.
+Since this project relies on pure front-end web technologies, no server or Node.js environment is required.
 
 1.  **Clone the repository:**
     ```bash
     git clone [https://github.com/your-username/cyber-maze.git](https://github.com/your-username/cyber-maze.git)
     ```
 2.  **Open the project folder.**
-3.  **Run the game:**
+3.  **Run the application:**
     Simply double-click `index.html` to open it in your default web browser.
 
 ---
 
-## 🕹️ How to Play
+## 🕹️ How to Use
 
-| Key / Button | Action |
+This project is designed as an automated visualizer, removing the need for manual controls.
+
+| Button | Action |
 | :--- | :--- |
-| **⬆️ Arrow Up** | Move character Up |
-| **⬇️ Arrow Down** | Move character Down |
-| **⬅️ Arrow Left** | Move character Left |
-| **➡️ Arrow Right** | Move character Right |
-| **AUTO SOLVE** | Automatically solves the maze |
-| **RESET** | Resets the game and timer |
+| **AUTO SOLVE** | Initiates the automated pathfinding sequence and triggers the audio. |
+| **RESET GAME** | Instantly stops the animation and resets the data packet to the starting position. |
+| **INFO (i)** | Opens the author credits modal. |
 
-**Objective:** Guide the red character from the starting point (top) to the **Green Zone** (bottom) in the shortest time possible.
+**Objective:** Sit back and watch the algorithm guide the red data packet from the insertion point to the **Green Zone** at the bottom right.
 
 ---
 
@@ -57,10 +54,11 @@ Since this project relies on pure web technologies, no server or Node.js environ
 
 ```text
 cyber-maze/
-├── index.html         # Main HTML structure and UI layout
+├── index.html         # Main UI layout and external library imports
 ├── styles/
-│   └── style.css      # Neon styling and animations
+│   └── style.css      # Dark theme styling, grid backgrounds, and layout
 ├── js/
-│   └── script.js      # Game logic, BFS algorithm, Canvas rendering
+│   └── script.js      # Animation loop, coordinate data, and Canvas rendering
+├── music/
+│   └── victory.mp3    # Audio asset triggered upon maze completion
 └── README.md          # Project documentation
-
